@@ -15,6 +15,10 @@ router.post("/delete_user", (req, res)=> userController.deleteUser(req, res));
 
 //hack routes
 router.post("/create_hack", (req, res)=> hackController.createHack(req, res));
+router.post("/update_hack", (req, res)=> hackController.updateHack(req, res));
+router.post("/get_hack_all", (req, res)=> hackController.getAllHacks(req, res));
+router.post("/get_hack_by_category",(req, res)=> hackController.getHacksByCategory(req,res));
+router.post("/delete_hack", (req, res)=> hackController.deleteHack(req, res));
 
 
 module.exports = router;

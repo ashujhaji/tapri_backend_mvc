@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const mongoosePaginate = require('mongoose-paginate');
 const schema = mongoose.Schema;
 
 //create hacks schema
@@ -19,6 +20,7 @@ const hacksSchema = new schema({
 	video : {type: String}
 });
 
+hacksSchema.plugin(mongoosePaginate)
 const Hacks = mongoose.model('Hacks',hacksSchema);
 
 module.exports = Hacks;
