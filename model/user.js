@@ -3,6 +3,7 @@ const schema = mongoose.Schema;
 
 //create user schema
 const userSchema = new schema({
+	token:{type : String},
 	user_id:{type : String},
 	user_gid:{type : String},
 	user_name:{type : String},

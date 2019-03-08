@@ -1,14 +1,13 @@
 let jwt = require('jsonwebtoken');
 
 
-module.exports.signNewToken = ()=>{
-	var uid = uuid.v1();
+module.exports.signNewToken = (uid)=>{
 	return new Promise((resolve, reject)=>{
 		jwt.sign(uid,'secretkey',(error, token)=>{
 				if (error) {
 					reject(error)
 				}else
-				resolve(uid)
+				resolve(token)
 		})
 	})
 }
