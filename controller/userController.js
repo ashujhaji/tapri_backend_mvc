@@ -63,13 +63,7 @@ module.exports.getUserDetails = (req, res)=>{
 }
 
 module.exports.updateUserDetails = (req, res)=>{
-	jwt.verify(req.body.token,"secretkey",(err, decoded)=>{
-		if (err) {
-			res.json({
-				mesaage : "verification failed"
-			})
-			return
-		}
+	tokenHelper.verifyToken(req.body.token).then((resolve)=>{
 		User.updateOne({user_gid: req.body.user_gid},req.body,
 			(err, affected, resp)=>{
 				if (err) {
@@ -78,24 +72,26 @@ module.exports.updateUserDetails = (req, res)=>{
 				}
 			res.json("User details updated")
 		})
+	},(reject)=>{
+		res.json({
+				mesaage : "verification failed"
+		})
 	})
 }
 
 
 module.exports.deleteUser = (req, res)=>{
-	jwt.verify(req.body.token,"secretkey",(err, decoded)=>{
-		if (err) {
-			res.json({
-				mesaage : "verification failed"
-			})
-			return
-		}
+	tokenHelper.verifyToken(req.body.token).then((resolve)=>{
 		User.deleteOne({user_gid: req.body.user_gid }, (err)=> {
-			    if (err) {
-			        res.send(err);
-			        return;
+			if (err) {
+			    res.send(err);
+			    return;
 			    }
-			    res.send("User deleted");
-			});
+			res.send("User deleted");
+		});
+	},(reject)=>{
+		res.json({
+				mesaage : "verification failed"
+		})
 	})
 }
