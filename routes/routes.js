@@ -25,5 +25,8 @@ router.post("/delete_hack", (req, res)=> hackController.deleteHack(req, res));
 //admin routes
 router.post("/create_admin",(req,res)=> adminController.registerAsAdmin(req,res))
 router.post("/get_admin",(req,res)=> adminController.getAdmin(req,res))
+router.post("/login_admin",(req,res)=> adminController.login(req,res))
+router.post("/update_admin_details",(req,res)=>adminController.updateDetails(req,res))
+
 
 module.exports = router;
