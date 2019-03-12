@@ -1,9 +1,9 @@
 let jwt = require('jsonwebtoken');
 
 
-module.exports.signNewToken = (uid)=>{
+module.exports.signNewToken = (user_gid)=>{
 	return new Promise((resolve, reject)=>{
-		jwt.sign(uid,'secretkey',(error, token)=>{
+		jwt.sign(user_gid,'secretkey',(error, token)=>{
 				if (error) {
 					reject(error)
 				}else

@@ -3,6 +3,7 @@ let express = require('express');
 let jwt = require('jsonwebtoken');
 let uuid = require('uuid');
 let tokenHelper = require('../helper/tokenHelper');
+let constant = require('../utils/constant');
 
 
 //create new hack
@@ -13,7 +14,7 @@ module.exports.createHack = (req, res)=>{
 			body : req.body.hack_body,
 			category : req.body.category,
 			image : req.body.image,
-			status : "pending",
+			status : constant.PENDING,
 			created_at : Date.now(),
 			updated_at : Date.now(),
 			internal_url : req.body.internal_url,
@@ -29,7 +30,7 @@ module.exports.createHack = (req, res)=>{
 		})
 	},(reject)=>{
 		res.json({
-			message : "verification failed"
+			message : constant.VERIFICATION_FAILED_MSG
 		})
 	})
 }
@@ -42,17 +43,17 @@ module.exports.updateHack = (req, res)=>{
 	        		(err2, affected, resp)=>{
 	        			if (err2) {
 	        				res.json({
-	        					mesaage: "failed"
+	        					mesaage: constant.UPDATION_FAILED
 	        				})
 	        				return
 	        			}
 	        			res.json({
-	        				mesaage : "Hack updated"
+	        				mesaage : constant.HACK_UPDATED
 	        			})
 	        		})
 	},(reject)=>{
 		res.json({
-			message:"verification failed"
+			message:constant.VERIFICATION_FAILED_MSG
 		})
 	})
 }
@@ -65,12 +66,12 @@ module.exports.getAllHacks = (req,res)=>{
 	        if (docs.length){
 	            res.send(docs)
 	        }else{
-	            res.send('Hack not found')
+	            res.send(constant.HACK_NOT_FOUND)
 	        }
     	});
 	},(reject)=>{
 		res.json({
-			message:"verification failed"
+			message:constant.VERIFICATION_FAILED_MSG
 		})
 	})
 }
@@ -84,12 +85,12 @@ module.exports.getHacksByCategory = (req, res)=>{
 	        if (docs.length){
 	            res.send(docs)
 	        }else{
-	            res.send('Hack not found')
+	            res.send(constant.HACK_NOT_FOUND)
 	        }
     	});
 	},(reject)=>{
 		res.json({
-			message:"verification failed"
+			message:constant.VERIFICATION_FAILED_MSG
 		})
 	})
 }
@@ -105,15 +106,15 @@ module.exports.deleteHack = (req, res)=>{
 			    res.send(err2);
 			    return;
 			    }
-			res.send("Hack deleted");
+			res.send(constant.HACK_DELETED);
 		});
 	        }else{
-	            res.send('Hack not found')
+	            res.send(constant.HACK_NOT_FOUND)
 	        }
     	});
 	},(reject)=>{
 		res.json({
-			message:"verification failed"
+			message:constant.VERIFICATION_FAILED_MSG
 		})
 	})
 }
