@@ -13,6 +13,18 @@ module.exports.signNewToken = (user_gid)=>{
 }
 
 
+module.exports.signNewTokenForAdmin = (center_code)=>{
+	return new Promise((resolve, reject)=>{
+		jwt.sign(center_code,'secretkey',(error, token)=>{
+				if (error) {
+					reject(error)
+				}else
+				resolve(token)
+		})
+	})
+}
+
+
 module.exports.verifyToken  = (token)=>{
 	return new Promise((resolve, reject)=>{
 		jwt.verify(token, "secretkey", (err, decoded)=>{

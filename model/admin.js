@@ -4,17 +4,18 @@ const schema = mongoose.Schema;
 //create hacks schema
 const adminSchema = new schema({
 	token:{type : String},
-	institution_id:{type : String},
+	center_code:{type : String},
 	institution_name:{type : String},
 	institution_dp:{type : String},
 	institution_email:{type : String},
 	status:{type:String},
-	created_at:{type: Date},
+	created_at:{type: Date, Default:Date.now()},
 	updated_at:{type: Date, Default : Date.now()},
-	courses:[{cid:String, c_name: String, 
-		branch:[{bid: String, b_name: String, 
-			section:[{sid:String, s_name:String}]
-		}]
+	university:{type:String},
+	student_details : [{
+		roll_no : String,
+		name : String,
+		session : String
 	}],
 	password:{type:String}
 });

@@ -36,7 +36,7 @@ module.exports.registerUser = (req, res)=>{
 	        			},(reject)=>{
 	     					res.json({
 	        					mesaage:constant.TOKEN_GENERATION_FAILED
-	     					})
+	     				})
 	       		})
 	      	})
 	    }

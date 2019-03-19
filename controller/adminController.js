@@ -3,34 +3,42 @@ let express = require('express');
 let jwt = require('jsonwebtoken');
 let uuid = require('uuid');
 let tokenHelper = require('../helper/tokenHelper');
+let constant = require('../utils/constant');
 
 module.exports.registerAsAdmin = (req, res)=>{
-	tokenHelper.verifyToken(req.body.token).then((resolve)=>{
-		Admin.find({institution_id : req.body.institution_id}, (err, docs)=> {
+		Admin.find({center_code : req.body.center_code}, (err, docs)=> {
 	        if (docs.length){
-	            res.send('Already registered')
+	            res.send('Already registered, Kindly login')
 	        }else{
+	        	if (req.body.center_code!=null&&req.body.password!=null) {
 	        	Admin.create(req.body)
 					.then((admin, err)=>{
-						res.json(admin)
+						tokenHelper.signNewTokenForAdmin(req.body.center_code).then((resolve)=>{
+							Admin.updateOne({center_code:req.body.center_code},
+								{token:resolve},
+								(err2,affected,resp)=>{
+									if (err2) {return}
+										res.json({mesaage:"Successfully registered, Kindly login"})
+								})
+						},(reject)=>{
+							res.json({
+	        					mesaage:constant.TOKEN_GENERATION_FAILED
+	     					})
+						})
 					})
+	        	}else{
+	        		res.json({mesaage: "Insufficient data"})
+	        	}
 	        }
 	    })
-	},(reject)=>{
-		res.json({
-				mesaage:"signing in failed",
-				status : false
-		})
-	})
 }
 
 
 module.exports.login = (req,res)=>{
-	tokenHelper.verifyToken(req.body.token).then((resolve)=>{
 		Admin.find({
 			$and : [
-        {institution_id:req.body.institution_id},
-        {password:req.body.password}
+        		{center_code:req.body.center_code},
+        		{password:req.body.password}
     				]},(err, docs)=> {
 			if (err) {
 				res.json({
@@ -40,19 +48,13 @@ module.exports.login = (req,res)=>{
 			}
 			res.json(docs)
 	    })
-	},(reject)=>{
-		res.json({
-				mesaage:"verification failed",
-				status : false
-		})
-	})
 }
 
 
 
 module.exports.updateDetails = (req, res)=>{
-	tokenHelper.verifyToken(req.body.token).then((resolve)=>{
-		Admin.updateOne({institution_id:req.body.institution_id},
+	tokenHelper.signNewTokenForAdmin(req.body.center_code).then((resolve)=>{
+		Admin.updateOne({center_code:req.body.center_code},
 			req.body,
 			(err,affected,resp)=>{
 			if (err) {
@@ -63,91 +65,15 @@ module.exports.updateDetails = (req, res)=>{
 		})
 	},(reject)=>{
 		res.json({
-			mesaage:"verification failed"
-		})
-	})
+			mesaage:constant.TOKEN_GENERATION_FAILED
+	    	})
+	    })
 }
-
-module.exports.addAvailableCourse = (req,res)=>{
-	tokenHelper.verifyToken(req.body.token).then((resolve)=>{
-		var courseData = { cid: uuid.v1(), c_name: req.body.course_name};
-		Admin.updateOne({institution_id:req.body.institution_id},
-			{$push: { courses: courseData }},
-				(err,affected,resp)=>{
-					if (err) {
-						res.json({
-							mesaage: "updation failed"
-						})
-						return
-					}
-					res.json(affected)
-				})
-	},(reject)=>{
-		res.json({
-			mesaage : "verification failed"
-		})
-	})
-}
-
-
-module.exports.deleteCourse = (req,res)=>{
-	tokenHelper.verifyToken(req.body.token).then((resolve)=>{
-		var courseData = { cid:req.body.cid};
-		Admin.updateOne({institution_id:req.body.institution_id},
-			{$pull: { courses: courseData }},
-				(err,affected,resp)=>{
-					if (err) {
-						res.json({
-							mesaage: "updation failed"
-						})
-						return
-					}
-					res.json(affected)
-				})
-	},(reject)=>{
-		res.json({
-			mesaage : "verification failed"
-		})
-	})
-}
-
-
-module.exports.addAvailableBranch = (req,res)=>{
-	tokenHelper.verifyToken(req.body.token).then((resolve)=>{
-		Admin.find({institution_id:req.body.institution_id},(err, docs)=>{
-			docs.find({cid : req.body.cid},(err2,docs2)=>{
-				res.json(docs2)
-			})
-		})
-		// var branchData = {bid : uuid.v1(), b_name : req.body.b_name}
-		// var courseData = {branch:branchData};
-		// Admin.updateOne({institution_id:req.body.institution_id},
-		// 	{$push: { courses: courseData }},
-		// 		(err,affected,resp)=>{
-		// 			if (err) {
-		// 				res.json({
-		// 					mesaage: "updation failed"
-		// 				})
-		// 				return
-		// 			}
-		// 			res.json(affected)
-		// 		})
-	},(reject)=>{
-		res.json({
-			mesaage : "verification failed"
-		})
-	})
-}
-
-
-
-
 
 module.exports.getAdmin = (req,res)=>{
-	tokenHelper.verifyToken(req.body.token).then((resolve)=>{
 		Admin.find({
 			$and : [
-        		{institution_id:req.body.institution_id},
+        		{center_code:req.body.center_code},
         		{password:req.body.password}
     				]},(err, docs)=> {
 			if (err) {
@@ -158,12 +84,26 @@ module.exports.getAdmin = (req,res)=>{
 			}
 			res.json(docs)
 	    })
+}
+
+
+
+module.exports.addStudentDetail = (req,res)=>{
+	tokenHelper.signNewTokenForAdmin(req.body.center_code).then((resolve)=>{
+		Admin.updateOne({center_code:req.body.center_code},
+			{$push: { student_details: req.body }},
+			(err,affected,resp)=>{
+			if (err) {
+				res.json("updation failed")
+				return
+			}
+			res.json(affected)
+		})
 	},(reject)=>{
 		res.json({
-				mesaage:"signing in failed",
-				status : false
-		})
-	})
+			mesaage:constant.TOKEN_GENERATION_FAILED
+	    	})
+	    })
 }
 
 
