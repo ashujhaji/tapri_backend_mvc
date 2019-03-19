@@ -117,6 +117,30 @@ module.exports.addStudentDetail = (req,res)=>{
 }
 
 
+module.exports.updateStudentDetails = (req,res)=>{
+	tokenHelper.verifyToken(req.body.token).then((resolve)=>{
+		Admin.findOneAndUpdate(
+		    { center_code: req.body.center_code, "student_details.roll_no": req.body.roll_no},
+		    { 
+		        "$set": {
+		            "student_details.$": req.body
+		        }
+		    },
+		    function(err,doc) {
+		    	if (!err) {res.json(doc)}
+		    		else return
+		    }
+		);
+	},(reject)=>{
+		res.json({
+			mesaage:constant.TOKEN_GENERATION_FAILED
+	   	})
+	})
+}
+
+
+
+
 module.exports.getStudentDetail = (req,res)=>{
 	tokenHelper.verifyToken(req.body.token).then((resolve)=>{
 		Admin.find({
@@ -125,11 +149,15 @@ module.exports.getStudentDetail = (req,res)=>{
         		{'student_details.roll_no' : req.body.roll_no}
     				]},(err,docs)=>{
     					if (err) {return}
-    						docs[0].student_details.forEach(function(item) {
-  								if (item.roll_no == req.body.roll_no) {
-  									res.json(item)
-  								}
-							});
+    						if (docs.length==0) {
+    							res.json({mesaage:"Student with this data does not found"})
+    						}else{
+	    						docs[0].student_details.forEach(function(item) {
+	  								if (item.roll_no == req.body.roll_no) {
+	  									res.json(item)
+	  								}
+								});
+    						}
     				})
 	},(reject)=>{
 		res.json({
