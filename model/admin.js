@@ -17,6 +17,11 @@ const adminSchema = new schema({
 		name : String,
 		session : String
 	}],
+	placement_data : [{
+		year : String,
+		company_name : String,
+		total_placed_count : String
+	}],
 	password:{type:String}
 });
 

@@ -28,5 +28,6 @@ router.post("/update_admin_details",(req,res)=>adminController.updateDetails(req
 router.post("/add_student",(req,res)=>adminController.addStudentDetail(req,res))
 router.post("/get_student_details",(req,res)=>adminController.getStudentDetail(req,res))
 router.post("/update_student_details",(req,res)=>adminController.updateStudentDetails(req,res))
+router.post("/add_placement_record",(req,res)=>adminController.addPlacementRecord(req,res))
 
 module.exports = router;

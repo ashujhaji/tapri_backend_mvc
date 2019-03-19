@@ -167,3 +167,35 @@ module.exports.getStudentDetail = (req,res)=>{
 }
 
 
+
+module.exports.addPlacementRecord = (req,res)=>{
+	tokenHelper.verifyToken(req.body.token).then((resolve)=>{
+		var placement = {year: req.body.year, company_name: req.body.company_name,total_placed_count:req.body.total_placed_count};
+		Admin.findOneAndUpdate({center_code: req.body.center_code}, {$push: {placement_data: placement}},
+		    function(err,doc) {
+		    	if (!err) {res.json(doc)}
+		    		else return
+		    });
+	},(reject)=>{
+		res.json({
+			mesaage:constant.TOKEN_GENERATION_FAILED
+	   	})
+	})
+}
+
+
+// module.exports.deletePlacementRecord = (req,res)=>{
+// 	tokenHelper.verifyToken(req.body.token).then((resolve)=>{
+// 		// var placement = {year: req.body.year, company_name: req.body.company_name,total_placed_count:req.body.total_placed_count};
+// 		Admin.findOneAndUpdate({center_code: req.body.center_code}, {$pull: {_id: placement}},
+// 		    function(err,doc) {
+// 		    	if (!err) {res.json(doc)}
+// 		    		else return
+// 		    });
+// 	},(reject)=>{
+// 		res.json({
+// 			mesaage:constant.TOKEN_GENERATION_FAILED
+// 	   	})
+// 	})
+// }
+
