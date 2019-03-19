@@ -53,7 +53,7 @@ module.exports.login = (req,res)=>{
 
 
 module.exports.updateDetails = (req, res)=>{
-	tokenHelper.signNewTokenForAdmin(req.body.center_code).then((resolve)=>{
+	tokenHelper.verifyToken(req.body.token).then((resolve)=>{
 		Admin.updateOne({center_code:req.body.center_code},
 			req.body,
 			(err,affected,resp)=>{
@@ -89,21 +89,53 @@ module.exports.getAdmin = (req,res)=>{
 
 
 module.exports.addStudentDetail = (req,res)=>{
-	tokenHelper.signNewTokenForAdmin(req.body.center_code).then((resolve)=>{
-		Admin.updateOne({center_code:req.body.center_code},
-			{$push: { student_details: req.body }},
-			(err,affected,resp)=>{
-			if (err) {
-				res.json("updation failed")
-				return
-			}
-			res.json(affected)
-		})
+	tokenHelper.verifyToken(req.body.token).then((resolve)=>{
+		Admin.find({
+			$and : [
+        		{center_code:req.body.center_code},
+        		{'student_details.roll_no' : req.body.roll_no}
+    				]},(err,docs)=>{
+    					if (docs.length==0) {
+    						Admin.updateOne({center_code:req.body.center_code},
+								{$push: { student_details: req.body }},
+								(err,affected,resp)=>{
+								if (err) {
+									res.json("updation failed")
+									return
+								}
+								res.json(affected)
+					})
+    					}else{
+							res.json("Student with this detail already exist")
+							}
+    				})
 	},(reject)=>{
 		res.json({
 			mesaage:constant.TOKEN_GENERATION_FAILED
 	    	})
 	    })
+}
+
+
+module.exports.getStudentDetail = (req,res)=>{
+	tokenHelper.verifyToken(req.body.token).then((resolve)=>{
+		Admin.find({
+			$and : [
+        		{center_code:req.body.center_code},
+        		{'student_details.roll_no' : req.body.roll_no}
+    				]},(err,docs)=>{
+    					if (err) {return}
+    						docs[0].student_details.forEach(function(item) {
+  								if (item.roll_no == req.body.roll_no) {
+  									res.json(item)
+  								}
+							});
+    				})
+	},(reject)=>{
+		res.json({
+			mesaage:constant.TOKEN_GENERATION_FAILED
+	   	})
+	})
 }
 
 
