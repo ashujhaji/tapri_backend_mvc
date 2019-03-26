@@ -18,23 +18,40 @@ response params are :->
 logged in / signed up message
 */
 module.exports.registerUser = (req, res)=>{
+	var jwtToken;
 	User.find({user_gid : req.body.user_gid}, (err, docs)=> {
 	    if (docs.length){
-	        res.json(docs)
+	    	res.json({
+	        	status:true,
+	        	mesaage:"User logged in",
+	        	data : docs})
 	    }else{
-	       	User.create({user_gid:req.body.user_gid})
+	       	User.create(req.body)
 	       		.then((user,err2)=>{
-	       			if (err2) {return}
+	       			if (err2) {
+						res.json({
+	        				status:true,
+	        				mesaage:"Error occured while registering"})
+	       				return}
 	       			tokenHelper.signNewToken(req.body.user_gid).then((resolve)=>{
+	       				jwtToken = resolve;
 	       				User.updateOne({user_gid:req.body.user_gid},
 	       					{token:resolve},
 	       					(err3,affected,resp)=>{
-	       						if (err3) {return}
+	       						if (err3) {
+									res.json({
+	        							status:false,
+	        							mesaage:"Failed to authenticate"})
+	       							return
+	       						}
 	        						res.json({
-	        							mesaage:constant.USER_REGISTERED})
+	        							status:true,
+	        							mesaage:constant.USER_REGISTERED,
+	        							data:[{token:jwtToken}]})
 	        					})
 	        			},(reject)=>{
 	     					res.json({
+	     						status:false,
 	        					mesaage:constant.TOKEN_GENERATION_FAILED
 	     				})
 	       		})
@@ -57,14 +74,22 @@ module.exports.getUserDetails = (req, res)=>{
 	tokenHelper.verifyToken(req.body.token).then((resolve)=>{
 		User.find({user_gid : req.body.user_gid}, (err, docs) =>{
 	        if (docs.length){
-	            res.send(docs)
+	        	res.json({
+	        	status:true,
+	        	mesaage:"User Found",
+	        	data : docs})
 	        }else{
-	            res.send(constant.USER_NOT_EXIST)
+	        	res.json({
+	        		status:false,
+	        		mesaage:constant.USER_NOT_EXIST
+	        	})
 	        }
     	});
 	},(reject)=>{
-		res.json({mesaage : constant.VERIFICATION_FAILED_MSG})
-	})
+		res.json({
+			status:false,
+			mesaage : constant.VERIFICATION_FAILED_MSG})
+		})
 }
 
 

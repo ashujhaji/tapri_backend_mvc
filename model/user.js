@@ -12,7 +12,8 @@ const userSchema = new schema({
 	updated_at:{type: Date, Default : Date.now()},
 	college_name:{type:String},
 	session : {type:String},
-	user_type : {type:String}
+	user_type : {type:String},
+	location : {type:String}
 });
 
 const User = mongoose.model('User',userSchema);

@@ -30,4 +30,6 @@ router.post("/get_student_details",(req,res)=>adminController.getStudentDetail(r
 router.post("/update_student_details",(req,res)=>adminController.updateStudentDetails(req,res))
 router.post("/add_placement_record",(req,res)=>adminController.addPlacementRecord(req,res))
 
+router.get("/pojo_route",(req,res)=>adminController.pojoRoute(req,res))
+
 module.exports = router;

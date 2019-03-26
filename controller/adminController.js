@@ -5,6 +5,13 @@ let uuid = require('uuid');
 let tokenHelper = require('../helper/tokenHelper');
 let constant = require('../utils/constant');
 
+
+module.exports.pojoRoute = (req,res)=>{
+	res.json({mesaage:"accessed"})
+}
+
+
+
 module.exports.registerAsAdmin = (req, res)=>{
 		Admin.find({center_code : req.body.center_code}, (err, docs)=> {
 	        if (docs.length){
