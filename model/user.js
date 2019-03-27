@@ -6,6 +6,7 @@ const userSchema = new schema({
 	token:{type : String},
 	user_gid:{type : String},
 	user_name:{type : String},
+	user_bio:{type:String},
 	user_dp:{type : String},
 	user_email:{type : String},
 	created_at:{type: Date},
