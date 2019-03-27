@@ -1,4 +1,4 @@
-let Hack = require('../model/hacks');
+let Post = require('../model/posts');
 let express = require('express');
 let jwt = require('jsonwebtoken');
 let uuid = require('uuid');
@@ -7,52 +7,63 @@ let constant = require('../utils/constant');
 
 
 //create new hack
-module.exports.createHack = (req, res)=>{
+module.exports.createPost = (req, res)=>{
 	tokenHelper.verifyToken(req.body.token).then((resolve)=>{
-		Hack.create({
-			hack_id : uuid.v1(),
-			body : req.body.hack_body,
+		Post.create({
+			post_id : uuid.v1(),
+			post_body : req.body.post_body,
 			category : req.body.category,
 			image : req.body.image,
 			status : constant.PENDING,
+			post_title:req.body.post_title,
 			created_at : Date.now(),
 			updated_at : Date.now(),
+			contributor_id:req.body.contributor_id,
 			internal_url : req.body.internal_url,
 			external_url : req.body.external_url,
 			video : req.body.video,
 			language : req.body.language
-		}).then((hack, err)=>{
+		}).then((post, err)=>{
 			if (err) {
-				res.json(err)
+				res.json({status:false,
+	        		mesaage:"error occured"})
 				return
 			}
-			res.json(hack)
+			res.json({
+				status:true,
+	        	mesaage:constant.USER_REGISTERED,
+	        	data:post
+			})
 		})
 	},(reject)=>{
 		res.json({
-			message : constant.VERIFICATION_FAILED_MSG
+			status:false,
+	        mesaage:constant.VERIFICATION_FAILED_MSG
 		})
 	})
 }
 
 
 //update hack
-module.exports.updateHack = (req, res)=>{
+module.exports.updatePost = (req, res)=>{
 	tokenHelper.verifyToken(req.body.token).then((resolve)=>{
-		Hack.updateOne({hack_id:req.body.hack_id},req.body,
+		Post.updateOne({post_id:req.body.post_id},req.body,
 	        		(err2, affected, resp)=>{
 	        			if (err2) {
 	        				res.json({
+	        					status:false,
 	        					mesaage: constant.UPDATION_FAILED
 	        				})
 	        				return
 	        			}
 	        			res.json({
+	        				status:true,
 	        				mesaage : constant.HACK_UPDATED
 	        			})
 	        		})
 	},(reject)=>{
 		res.json({
+			status:false,
 			message:constant.VERIFICATION_FAILED_MSG
 		})
 	})
@@ -60,36 +71,42 @@ module.exports.updateHack = (req, res)=>{
 
 
 //get all hacks
-module.exports.getAllHacks = (req,res)=>{
+module.exports.getAllPosts = (req,res)=>{
 	tokenHelper.verifyToken(req.body.token).then((resolve)=>{
-		Hack.find({language : req.body.language},(err, docs) =>{
+		Post.find({language : req.body.language},(err, docs) =>{
 	        if (docs.length){
-	            res.send(docs)
+	            res.json({status:true,
+	            	message:"posts found",
+	            	data:docs})
 	        }else{
-	            res.send(constant.HACK_NOT_FOUND)
+	            res.json({status:false,
+	            	message:constant.HACK_NOT_FOUND})
 	        }
     	});
 	},(reject)=>{
-		res.json({
+		res.json({status:false,
 			message:constant.VERIFICATION_FAILED_MSG
 		})
 	})
 }
 
 
-//get hacks by category
-module.exports.getHacksByCategory = (req, res)=>{
+//get hacks by user
+module.exports.getPostsByUser = (req, res)=>{
 	tokenHelper.verifyToken(req.body.token).then((resolve)=>{
-		Hack.find({language : req.body.language,
-					category : req.body.category},(err, docs) =>{
+		Post.find({language : req.body.language,
+					contributor_id : req.body.contributor_id},(err, docs) =>{
 	        if (docs.length){
-	            res.send(docs)
+	           res.json({status:true,
+	            	message:"posts found",
+	            	data:docs})
 	        }else{
-	            res.send(constant.HACK_NOT_FOUND)
+	            res.json({status:false,
+	            	message:constant.HACK_NOT_FOUND})
 	        }
     	});
 	},(reject)=>{
-		res.json({
+		res.json({status:false,
 			message:constant.VERIFICATION_FAILED_MSG
 		})
 	})
@@ -97,19 +114,19 @@ module.exports.getHacksByCategory = (req, res)=>{
 
 
 //delete hack
-module.exports.deleteHack = (req, res)=>{
+module.exports.deletePost = (req, res)=>{
 	tokenHelper.verifyToken(req.body.token).then((resolve)=>{
-		Hack.find({hack_id : req.body.hack_id}, (err, docs) =>{
+		Post.find({post_id : req.body.post_id}, (err, docs) =>{
 	        if (docs.length){
-	            Hack.deleteOne({hack_id: req.body.hack_id }, (err2)=> {
+	            Post.deleteOne({post_id: req.body.post_id }, (err2)=> {
 			if (err2) {
-			    res.send(err2);
+			   	res.json({status:true,message:"error occured"});
 			    return;
 			    }
-			res.send(constant.HACK_DELETED);
+			res.json({status:true,message:constant.HACK_DELETED});
 		});
 	        }else{
-	            res.send(constant.HACK_NOT_FOUND)
+	        	res.json({status:true,message:constant.HACK_NOT_FOUND});
 	        }
     	});
 	},(reject)=>{

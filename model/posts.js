@@ -3,9 +3,10 @@ const mongoosePaginate = require('mongoose-paginate');
 const schema = mongoose.Schema;
 
 //create hacks schema
-const hacksSchema = new schema({
-	hack_id:{type : String},
-	body:{type : String},
+const postSchema = new schema({
+	post_id:{type : String},
+	post_body:{type : String},
+	post_title:{type:String},
 	category:{type : String},
 	subcategories:[{title: String}],
 	tags: [{title: String}],
@@ -14,13 +15,15 @@ const hacksSchema = new schema({
 	country:{type: String},
 	created_at:{type: Date},
 	updated_at:{type: Date},
-	contributor:[{name:String, gid:String}],
+	contributor_id:{type:String},
+	comments:[{comment_body:String, commented_at:Date, commented_by:String}],
 	internal_url : {type: String},
 	external_url : {type: String},
+	image : {type:String},
 	video : {type: String}
 });
 
-hacksSchema.plugin(mongoosePaginate)
-const Hacks = mongoose.model('Hacks',hacksSchema);
+postSchema.plugin(mongoosePaginate)
+const Posts = mongoose.model('Posts',postSchema);
 
-module.exports = Hacks;
+module.exports = Posts;
