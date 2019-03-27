@@ -94,8 +94,7 @@ module.exports.getAllPosts = (req,res)=>{
 //get hacks by user
 module.exports.getPostsByUser = (req, res)=>{
 	tokenHelper.verifyToken(req.body.token).then((resolve)=>{
-		Post.find({language : req.body.language,
-					contributor_id : req.body.contributor_id},(err, docs) =>{
+		Post.find({contributor_id : req.body.contributor_id},(err, docs) =>{
 	        if (docs.length){
 	           res.json({status:true,
 	            	message:"posts found",
@@ -131,7 +130,52 @@ module.exports.deletePost = (req, res)=>{
     	});
 	},(reject)=>{
 		res.json({
+			status:false,
 			message:constant.VERIFICATION_FAILED_MSG
 		})
+	})
+}
+
+
+
+//comment on post
+module.exports.addCommentOnPost = (req,res)=>{
+	var comment = {comment_body:req.body.comment_body,commented_at:Date.now(),commented_by:req.body.user_gid, image:req.body.image}
+	tokenHelper.verifyToken(req.body.token).then((resolve)=>{
+		Post.updateOne({post_id:req.body.post_id},{$push: {comments: comment}},
+	        		(err2, affected, resp)=>{
+	        			if (err2) {
+	        				res.json({
+	        					status:false,
+	        					mesaage: "error occured while commenting"
+	        				})
+	        				return
+	        			}
+	        			res.json({
+	        				status:true,
+	        				mesaage : "Comment saved"
+	        			})
+	        		})
+	},(reject)=>{
+		res.json({
+			status:false,
+			message:constant.VERIFICATION_FAILED_MSG
+		})
+	})
+}
+
+
+//delete comment from post
+module.exports.deleteCommentFromPost = (req,res)=>{
+	tokenHelper.verifyToken(req.body.token).then((resolve)=>{
+		Post.findOneAndUpdate({post_id: req.body.post_id}, {$pull: {_id: req.body.comment_id}},
+		    function(err,doc) {
+		    	if (!err) {res.json(doc)}
+		    		else return
+		    });
+	},(reject)=>{
+		res.json({
+			mesaage:constant.TOKEN_GENERATION_FAILED
+	   	})
 	})
 }

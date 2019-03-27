@@ -16,9 +16,11 @@ router.post(constant.ROUTE_DELETE_USER, (req, res)=> userController.deleteUser(r
 //posts routes
 router.post("/create_post", (req, res)=> postController.createPost(req, res));
 router.post("/update_post", (req, res)=> postController.updatePost(req, res));
-router.post("/get_hack_posts", (req, res)=> postController.getAllPosts(req, res));
+router.post("/get_all_posts", (req, res)=> postController.getAllPosts(req, res));
 router.post("/get_post_by_user",(req, res)=> postController.getPostsByUser(req,res));
 router.post("/delete_post", (req, res)=> postController.deletePost(req, res));
+router.post("/add_comment_on_post",(req,res)=>postController.addCommentOnPost(req,res));
+router.post("/delete_comment_from_post",(req,res)=>postController.deleteCommentFromPost(req,res));
 
 
 //admin routes
