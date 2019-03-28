@@ -12,6 +12,7 @@ const userSchema = new schema({
 	created_at:{type: Date},
 	updated_at:{type: Date, Default : Date.now()},
 	college_name:{type:String},
+	institute_id:{type:String},
 	session : {type:String},
 	user_type : {type:String},
 	location : {type:String}

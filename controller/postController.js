@@ -140,7 +140,7 @@ module.exports.deletePost = (req, res)=>{
 
 //comment on post
 module.exports.addCommentOnPost = (req,res)=>{
-	var comment = {comment_body:req.body.comment_body,commented_at:Date.now(),commented_by:req.body.user_gid, image:req.body.image}
+	var comment = {comment_id:uuid.v1(), comment_body:req.body.comment_body,commented_at:Date.now(),commented_by:req.body.user_gid, image:req.body.image}
 	tokenHelper.verifyToken(req.body.token).then((resolve)=>{
 		Post.updateOne({post_id:req.body.post_id},{$push: {comments: comment}},
 	        		(err2, affected, resp)=>{
@@ -168,7 +168,7 @@ module.exports.addCommentOnPost = (req,res)=>{
 //delete comment from post
 module.exports.deleteCommentFromPost = (req,res)=>{
 	tokenHelper.verifyToken(req.body.token).then((resolve)=>{
-		Post.findOneAndUpdate({post_id: req.body.post_id}, {$pull: {_id: req.body.comment_id}},
+		Post.findOneAndUpdate({post_id: req.body.post_id}, {$pull: {comment_id: req.body.comment_id}},
 		    function(err,doc) {
 		    	if (!err) {res.json(doc)}
 		    		else return

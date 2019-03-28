@@ -16,7 +16,7 @@ const postSchema = new schema({
 	created_at:{type: Date},
 	updated_at:{type: Date},
 	contributor_id:{type:String},
-	comments:[{comment_body:String, commented_at:Date, commented_by:String, image:String}],
+	comments:[{comment_id : String, comment_body:String, commented_at:Date, commented_by:String, image:String}],
 	internal_url : {type: String},
 	external_url : {type: String},
 	image : {type:String},
