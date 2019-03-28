@@ -85,11 +85,16 @@ module.exports.getAdmin = (req,res)=>{
     				]},(err, docs)=> {
 			if (err) {
 				res.json({
-					mesaage: "User not found"
+					status:false,
+					mesaage: "Admin not found"
 				})
 				return
 			}
-			res.json(docs)
+			res.json({
+					status:true,
+					mesaage: "Admin found",
+					data:docs
+				})
 	    })
 }
 
@@ -187,6 +192,17 @@ module.exports.addPlacementRecord = (req,res)=>{
 		res.json({
 			mesaage:constant.TOKEN_GENERATION_FAILED
 	   	})
+	})
+}
+
+
+module.exports.getCollegeName = (institute_id)=>{
+	return new Promise((resolve, reject)=>{
+		Admin.find({center_code:institute_id},(err, docs)=> {
+			if (err) {reject(err)}else{
+				resolve(docs[0].institution_name)
+			}
+	    })
 	})
 }
 

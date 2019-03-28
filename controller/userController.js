@@ -4,6 +4,7 @@ let jwt = require('jsonwebtoken');
 let tokenHelper = require('../helper/tokenHelper')
 let uuid = require('uuid');
 let constant = require('../utils/constant');
+let adminController = require('../controller/adminController');
 
 
 //register user with google id
@@ -111,13 +112,29 @@ module.exports.updateUserDetails = (req, res)=>{
 		User.updateOne({user_gid: req.body.user_gid},req.body,
 			(err, affected, resp)=>{
 				if (err) {
-					res.send(err)
+					res.json({status:false,
+	        			mesaage:err})
 					return
 				}
-			res.json(constant.USER_DETAILS_UPDATED)
+				adminController.getCollegeName(req.body.institute_id).then((resolve)=>{
+					User.updateOne({user_gid:req.body.user_gid},{college_name:resolve},
+						(err2,affected2,resp2)=>{
+							if (err2) {
+								res.json({status:false,
+				        			mesaage:err2})
+								return
+							}
+							res.json({status:true,
+	        					mesaage:constant.USER_DETAILS_UPDATED})
+							})
+				},(reject)=>{
+					res.json({status:false,
+	        				mesaage:"Not Found"})
+				})
 		})
 	},(reject)=>{
 		res.json({
+			status:false,
 				mesaage : constant.VERIFICATION_FAILED_MSG
 		})
 	})
