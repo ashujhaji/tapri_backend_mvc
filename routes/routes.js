@@ -40,6 +40,7 @@ router.post("/update_job_details",(req,res)=>jobController.updateJobDetails(req,
 router.post("/get_all_jobs_by_institute", (req, res)=> jobController.getAllJobsByInstituteId(req, res));
 router.post("/get_job_by_id", (req, res)=> jobController.getJobById(req, res));
 router.post("/delete_job_by_id", (req, res)=> jobController.deleteJobById(req, res));
+router.post("/apply_for_job", (req, res)=> jobController.applyForJob(req, res));
 
 router.get("/pojo_route",(req,res)=>adminController.pojoRoute(req,res))
 
