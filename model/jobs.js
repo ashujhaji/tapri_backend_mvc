@@ -1,9 +1,8 @@
 const mongoose = require('mongoose');
-const mongoosePaginate = require('mongoose-paginate');
 const schema = mongoose.Schema;
 
 //create hacks schema
-const postSchema = new schema({
+const jobSchema = new schema({
 	post_id:{type : String},
 	post_body:{type : String},
 	post_title:{type:String},
@@ -16,14 +15,12 @@ const postSchema = new schema({
 	created_at:{type: Date},
 	updated_at:{type: Date},
 	contributor_id:{type:String},
-	comments:[{comment_id : String, comment_body:String, commented_at:Date, commented_by:String, image:String}],
-	is_job_post : {type: Boolean},
 	external_url : {type: String},
 	image : {type:String},
-	video : {type: String}
+	video : {type: String},
+	applications : {user_gid:String,user_name:String, user_email:String,is_rejected:Boolean}
 });
 
-postSchema.plugin(mongoosePaginate)
-const Posts = mongoose.model('Posts',postSchema);
+const Jobs = mongoose.model('Jobs',jobSchema);
 
-module.exports = Posts;
+module.exports = Jobs;
