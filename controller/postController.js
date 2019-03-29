@@ -20,6 +20,8 @@ module.exports.createPost = (req, res)=>{
 			created_at : Date.now(),
 			updated_at : Date.now(),
 			contributor_id:req.body.contributor_id,
+			contributor_name : req.body.contributor_name,
+			contributor_institute:req.body.contributor_institute,
 			internal_url : req.body.internal_url,
 			external_url : req.body.external_url,
 			video : req.body.video,
@@ -89,7 +91,7 @@ module.exports.updatePost = (req, res)=>{
 //get all hacks
 module.exports.getAllPosts = (req,res)=>{
 	tokenHelper.verifyToken(req.body.token).then((resolve)=>{
-		Post.find({language : req.body.language},(err, docs) =>{
+		Post.find({},(err, docs) =>{
 	        if (docs.length){
 	            res.json({status:true,
 	            	message:"posts found",

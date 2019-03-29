@@ -16,6 +16,8 @@ const postSchema = new schema({
 	created_at:{type: Date},
 	updated_at:{type: Date},
 	contributor_id:{type:String},
+	contributor_name:{type:String},
+	contributor_institute:{type:String},
 	comments:[{comment_id : String, comment_body:String, commented_at:Date, commented_by:String, image:String}],
 	is_job_post : {type: Boolean},
 	external_url : {type: String},
