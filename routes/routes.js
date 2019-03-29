@@ -5,6 +5,7 @@ let constant = require('../utils/constant');
 const userController = require("../controller/userController");
 const adminController = require("../controller/adminController");
 const postController = require("../controller/postController");
+const jobController = require("../controller/jobController");
 
 
 //user routes
@@ -32,6 +33,10 @@ router.post("/add_student",(req,res)=>adminController.addStudentDetail(req,res))
 router.post("/get_student_details",(req,res)=>adminController.getStudentDetail(req,res))
 router.post("/update_student_details",(req,res)=>adminController.updateStudentDetails(req,res))
 router.post("/add_placement_record",(req,res)=>adminController.addPlacementRecord(req,res))
+
+
+//job routes
+router.post("/update_job_details",(req,res)=>jobController.updateJobDetails(req,res))
 
 router.get("/pojo_route",(req,res)=>adminController.pojoRoute(req,res))
 

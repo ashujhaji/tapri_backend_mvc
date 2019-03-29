@@ -32,3 +32,28 @@ module.exports.createNewJob = (post)=>{
 		})
 	})
 }
+
+
+module.exports.updateJobDetails = (req,res)=>{
+	tokenHelper.verifyToken(req.body.token).then((resolve)=>{
+		Jobs.updateOne({post_id:req.body.post_id},req.body,
+	        		(err2, affected, resp)=>{
+	        			if (err2) {
+	        				res.json({
+	        					status:false,
+	        					mesaage: constant.UPDATION_FAILED
+	        				})
+	        				return
+	        			}
+	        			res.json({
+	        				status:true,
+	        				mesaage : "Details updated"
+	        			})
+	        		})
+	},(reject)=>{
+		res.json({
+			status:false,
+			message:constant.VERIFICATION_FAILED_MSG
+		})
+	})
+}
