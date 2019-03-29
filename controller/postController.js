@@ -4,6 +4,7 @@ let jwt = require('jsonwebtoken');
 let uuid = require('uuid');
 let tokenHelper = require('../helper/tokenHelper');
 let constant = require('../utils/constant');
+let job = require('../controller/jobController');
 
 
 //create new hack
@@ -22,18 +23,33 @@ module.exports.createPost = (req, res)=>{
 			internal_url : req.body.internal_url,
 			external_url : req.body.external_url,
 			video : req.body.video,
-			language : req.body.language
+			language : req.body.language,
+			is_job_post:req.body.is_job_post
 		}).then((post, err)=>{
 			if (err) {
 				res.json({status:false,
 	        		mesaage:"error occured"})
 				return
 			}
-			res.json({
+			if(req.body.is_job_post=='true'){
+				job.createNewJob(post).then((resolve)=>{
+					res.json({
+						status:true,
+			        	mesaage:"Job created",
+			        	data:resolve})
+				},(reject)=>{
+					res.json({status:false,
+	        		mesaage:"error occured"})
+				return
+				})
+			}else{
+				res.json({
 				status:true,
-	        	mesaage:constant.USER_REGISTERED,
+	        	mesaage:"post created",
 	        	data:post
 			})
+			}
+			
 		})
 	},(reject)=>{
 		res.json({
