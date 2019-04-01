@@ -15,7 +15,8 @@ module.exports.pojoRoute = (req,res)=>{
 module.exports.registerAsAdmin = (req, res)=>{
 		Admin.find({center_code : req.body.center_code}, (err, docs)=> {
 	        if (docs.length){
-	            res.send('Already registered, Kindly login')
+	            res.json({status:true,
+	            	mesaage:'Already registered, Kindly login'})
 	        }else{
 	        	if (req.body.center_code!=null&&req.body.password!=null) {
 	        	Admin.create(req.body)
@@ -25,16 +26,19 @@ module.exports.registerAsAdmin = (req, res)=>{
 								{token:resolve},
 								(err2,affected,resp)=>{
 									if (err2) {return}
-										res.json({mesaage:"Successfully registered, Kindly login"})
+										res.json({stausd:true,
+											mesaage:"Successfully registered, Kindly login"})
 								})
 						},(reject)=>{
 							res.json({
+								status:false,
 	        					mesaage:constant.TOKEN_GENERATION_FAILED
 	     					})
 						})
 					})
 	        	}else{
-	        		res.json({mesaage: "Insufficient data"})
+	        		res.json({status:false,
+	        			mesaage: "Insufficient data"})
 	        	}
 	        }
 	    })
@@ -49,11 +53,14 @@ module.exports.login = (req,res)=>{
     				]},(err, docs)=> {
 			if (err) {
 				res.json({
+					status:false,
 					mesaage: "login failed"
 				})
 				return
 			}
-			res.json(docs)
+			res.json({status:true,
+				mesaage:"Admin logged in",
+				data:docs})
 	    })
 }
 
