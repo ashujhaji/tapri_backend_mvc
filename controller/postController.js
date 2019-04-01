@@ -33,23 +33,21 @@ module.exports.createPost = (req, res)=>{
 	        		mesaage:"error occured"})
 				return
 			}
-			if(req.body.is_job_post=='true'){
+			if(!post.is_job_post){
+				res.json({
+				status:true,
+	        	mesaage:"post created",
+	        	data:post})
+			}else{
 				job.createNewJob(post).then((resolve)=>{
 					res.json({
 						status:true,
 			        	mesaage:"Job created",
-			        	data:resolve})
+			        	data:post})
 				},(reject)=>{
 					res.json({status:false,
 	        		mesaage:"error occured"})
-				return
 				})
-			}else{
-				res.json({
-				status:true,
-	        	mesaage:"post created",
-	        	data:post
-			})
 			}
 			
 		})

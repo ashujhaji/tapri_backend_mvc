@@ -200,7 +200,11 @@ module.exports.getCollegeName = (institute_id)=>{
 	return new Promise((resolve, reject)=>{
 		Admin.find({center_code:institute_id},(err, docs)=> {
 			if (err) {reject(err)}else{
-				resolve(docs[0].institution_name)
+				console.log(docs)
+				if (docs.length!=0) {
+					resolve(docs[0].institution_name)
+				}else
+				reject("error")
 			}
 	    })
 	})

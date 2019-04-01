@@ -130,21 +130,32 @@ module.exports.deleteJobById = (req,res)=>{
 
 module.exports.applyForJob = (req,res)=>{
 	tokenHelper.verifyToken(req.body.token).then((resolve)=>{
-		var application = {user_gid:req.body.user_gid,user_name:req.body.user_name,user_email:req.body.user_email,is_rejected:false}
-		Jobs.updateOne({post_id:req.body.post_id},{$push: {applications: application}},
-	        		(err2, affected, resp)=>{
-	        			if (err2) {
-	        				res.json({
-	        					status:false,
-	        					mesaage: "error occured while applying"
-	        				})
-	        				return
-	        			}
-	        			res.json({
-	        				status:true,
-	        				mesaage : "Application saved"
-	        			})
-	        		})
+			Jobs.find({'applications.user_gid' : req.body.user_gid},(err,docs)=>{
+    					if (docs.length==0) {
+    						var application = {user_gid:req.body.user_gid,user_name:req.body.user_name,user_email:req.body.user_email,is_rejected:false}
+							Jobs.updateOne({post_id:req.body.post_id},{$push: {applications: application}},
+			        		(err2, affected, resp)=>{
+			        			if (err2) {
+			        				res.json({
+			        					status:false,
+			        					mesaage: "error occured while applying"
+			        				})
+			        				return
+			        			}
+			        			res.json({
+			        				status:true,
+			        				mesaage : "Application saved"
+			        			})
+			        		})
+		    			}else{
+								res.json({
+			        					status:false,
+			        					mesaage: "Already registered for this job"
+			        				})
+							}
+		    			})
+
+
 	},(reject)=>{
 		res.json({
 			status:false,
