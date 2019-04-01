@@ -85,7 +85,8 @@ module.exports.updateDetails = (req, res)=>{
 }
 
 module.exports.getAdmin = (req,res)=>{
-		Admin.find({
+	tokenHelper.verifyToken(req.body.token).then((resolve)=>{
+				Admin.find({
 			$and : [
         		{center_code:req.body.center_code},
         		{password:req.body.password}
@@ -102,6 +103,12 @@ module.exports.getAdmin = (req,res)=>{
 					mesaage: "Admin found",
 					data:docs
 				})
+	    })
+	},(reject)=>{
+		res.json({
+			status:false,
+			mesaage:constant.TOKEN_GENERATION_FAILED
+	    	})
 	    })
 }
 
