@@ -167,10 +167,16 @@ module.exports.addCommentOnPost = (req,res)=>{
 	        				})
 	        				return
 	        			}
-	        			res.json({
-	        				status:true,
-	        				mesaage : "Comment saved"
-	        			})
+	        			Post.find({post_id : req.body.post_id},(err, docs) =>{
+					        if (docs.length){
+					           res.json({status:true,
+					            	message:"posts found",
+					            	data:docs})
+					        }else{
+					            res.json({status:false,
+					            	message:constant.HACK_NOT_FOUND})
+					        }
+				    	});
 	        		})
 	},(reject)=>{
 		res.json({
